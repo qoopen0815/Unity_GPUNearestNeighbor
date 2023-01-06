@@ -93,7 +93,7 @@ namespace NearestNeighborSample.TwoDimension
             Material m = ParticleRenderMat;
             m.SetPass(0);
             m.SetBuffer("_Particles", GetBuffer());
-            Graphics.DrawProcedural(MeshTopology.Points, GetParticleNum());
+            Graphics.DrawProceduralNow(MeshTopology.Points, GetParticleNum());
         }
 
         void OnDestroy()

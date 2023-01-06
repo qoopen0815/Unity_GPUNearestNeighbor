@@ -72,7 +72,7 @@ public abstract class MyParticleSystemBase<Dim, Vec> : MonoBehaviour where Dim :
         Material m = ParticleRenderMat;
         m.SetPass(0);
         m.SetBuffer("_Particles", ParticlesBufferRead);
-        Graphics.DrawProcedural(MeshTopology.Points, NumParticles);
+        Graphics.DrawProceduralNow(MeshTopology.Points, NumParticles);
     }
 
     void OnDestroy() {

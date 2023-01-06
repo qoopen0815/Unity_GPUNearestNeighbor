@@ -39,8 +39,9 @@ namespace NearestNeighborSample.ThreeDimension
         #endregion ForParticle
 
         #region ForGrid
-        public Vector3 range = new Vector3(128, 128, 128);
-        public Vector3 gridDim = new Vector3(16, 16, 16);
+        public Vector3 offset = Vector3.zero;
+        public Vector3 range = new Vector3(128, 128, 128); // grid size
+        public Vector3 gridDim = new Vector3(16, 16, 16);  // cell size
         GridOptimizer3D<MyParticle> gridOptimizer;
         #endregion ForGrid
 
@@ -94,7 +95,7 @@ namespace NearestNeighborSample.ThreeDimension
             Material m = ParticleRenderMat;
             m.SetPass(0);
             m.SetBuffer("_Particles", GetBuffer());
-            Graphics.DrawProcedural(MeshTopology.Points, GetParticleNum());
+            Graphics.DrawProceduralNow(MeshTopology.Points, GetParticleNum());
         }
 
         void OnDestroy()
@@ -122,7 +123,8 @@ namespace NearestNeighborSample.ThreeDimension
             MyParticle[] particles = new MyParticle[numParticles];
             for (int i = 0; i < numParticles; i++)
             {
-                particles[i] = new MyParticle(new Vector3(Random.Range(1, range.x), Random.Range(1, range.y), Random.Range(1, range.z)));
+                //particles[i] = new MyParticle(new Vector3(Random.Range(1, range.x), Random.Range(1, range.y), Random.Range(1, range.z)) + offset);
+                particles[i] = new MyParticle(offset + Random.insideUnitSphere * 50);
             }
             threadGroupSize = numParticles / SIMULATION_BLOCK_SIZE;
             particlesBufferRead.SetData(particles);
@@ -150,6 +152,28 @@ namespace NearestNeighborSample.ThreeDimension
         }
 
         #endregion PrivateFuncs
+
+
+        void OnDrawGizmosSelected()
+        {
+            Gizmos.color = Color.cyan;
+            Vector3Int num = new Vector3Int((int)(range.x/gridDim.x), (int)(range.y / gridDim.y), (int)(range.z / gridDim.z));
+            for (int indiceX=0; indiceX < num.x; indiceX++)
+            {
+                for (int indiceY = 0; indiceY < num.y; indiceY++)
+                {
+                    for (int indiceZ = 0; indiceZ < num.z; indiceZ++)
+                    {
+                        Vector3 center = new Vector3(
+                                                x: (indiceX+0.5f)*gridDim.x,
+                                                y: (indiceY + 0.5f) * gridDim.y,
+                                                z: (indiceZ + 0.5f) * gridDim.z);
+                        Gizmos.DrawWireCube(center, gridDim);
+                        
+                    }
+                }
+            }
+        }
     }
 
 
